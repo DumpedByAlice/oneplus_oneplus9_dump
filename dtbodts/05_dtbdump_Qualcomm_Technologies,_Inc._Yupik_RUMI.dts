@@ -1,0 +1,122 @@
+/dts-v1/;
+
+/ {
+	compatible = "qcom,yupik-rumi", "qcom,yupik", "qcom,rumi";
+	model = "Qualcomm Technologies, Inc. Yupik RUMI";
+	qcom,board-id = <0x1000f 0x0>;
+	qcom,msm-id = <0x1db 0x10000>;
+
+	__fixups__ {
+		L10C = "/fragment@2/__overlay__:vdda-phy-supply:0";
+		L6B = "/fragment@2/__overlay__:vdda-pll-supply:0";
+		L7B = "/fragment@3/__overlay__:vcc-supply:0";
+		L9B = "/fragment@3/__overlay__:vccq-supply:0", "/fragment@3/__overlay__:qcom,vddp-ref-clk-supply:0";
+		gcc_ufs_phy_gdsc = "/fragment@3/__overlay__:vdd-hba-supply:0";
+		qupv3_se5_2uart = "/fragment@4:target:0";
+		soc = "/fragment@0:target:0";
+		ufshc_mem = "/fragment@3:target:0";
+		ufsphy_mem = "/fragment@2:target:0";
+		usb0 = "/fragment@1:target:0";
+		usb_nop_phy = "/fragment@1/__overlay__/dwc3@a600000:usb-phy:4";
+	};
+
+	__local_fixups__ {
+
+		fragment@1 {
+
+			__overlay__ {
+
+				dwc3@a600000 {
+					usb-phy = <0x0>;
+				};
+			};
+		};
+	};
+
+	__symbols__ {
+		usb_emu_phy_0 = "/fragment@0/__overlay__/usb_emu_phy@a720000";
+		wdog = "/fragment@0/__overlay__/qcom,wdt@17c10000";
+	};
+
+	fragment@0 {
+		target = <0xffffffff>;
+
+		__overlay__ {
+
+			qcom,wdt@17c10000 {
+				phandle = <0x2>;
+				status = "disabled";
+			};
+
+			timer {
+				clock-frequency = <0x4c4b40>;
+			};
+
+			timer@17c20000 {
+				clock-frequency = <0x4c4b40>;
+			};
+
+			usb_emu_phy@a720000 {
+				compatible = "qcom,usb-emu-phy";
+				phandle = <0x1>;
+				qcom,emu-init-seq = <0xffff 0x4 0xfff0 0x4 0x100000 0x20 0x0 0x20 0x101f0 0x20 0x100000 0x3c 0x0 0x3c 0x10060 0x3c 0x0 0x4>;
+				reg = <0xa720000 0x9500>;
+			};
+		};
+	};
+
+	fragment@1 {
+		target = <0xffffffff>;
+
+		__overlay__ {
+
+			dwc3@a600000 {
+				dr_mode = "peripheral";
+				maximum-speed = "high-speed";
+				usb-phy = <0x1 0xffffffff>;
+			};
+		};
+	};
+
+	fragment@2 {
+		target = <0xffffffff>;
+
+		__overlay__ {
+			compatible = "qcom,ufs-phy-qrbtc-sdm845";
+			status = "ok";
+			vdda-phy-max-microamp = <0x17b4c>;
+			vdda-phy-supply = <0xffffffff>;
+			vdda-pll-max-microamp = <0x47e0>;
+			vdda-pll-supply = <0xffffffff>;
+		};
+	};
+
+	fragment@3 {
+		target = <0xffffffff>;
+
+		__overlay__ {
+			limit-rx-hs-gear = <0x1>;
+			limit-tx-hs-gear = <0x1>;
+			qcom,disable-lpm;
+			qcom,vddp-ref-clk-max-microamp = <0x64>;
+			qcom,vddp-ref-clk-supply = <0xffffffff>;
+			rpm-level = <0x0>;
+			spm-level = <0x0>;
+			status = "ok";
+			vcc-max-microamp = <0xc3500>;
+			vcc-supply = <0xffffffff>;
+			vccq-max-microamp = <0xdbba0>;
+			vccq-supply = <0xffffffff>;
+			vdd-hba-fixed-regulator;
+			vdd-hba-supply = <0xffffffff>;
+		};
+	};
+
+	fragment@4 {
+		target = <0xffffffff>;
+
+		__overlay__ {
+			qcom,rumi_platform;
+		};
+	};
+};
